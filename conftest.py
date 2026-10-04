@@ -1,5 +1,7 @@
 import pytest
+from api_client import ApiClient
 
 @pytest.fixture
-def base_url():
-  return "https://jsonplaceholder.typicode.com/"
+def api_client():
+  return ApiClient(base_url="https://jsonplaceholder.typicode.com")
+
