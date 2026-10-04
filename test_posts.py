@@ -33,4 +33,28 @@ def test_get_multiple_posts(base_url, post_id):
   assert response.status_code == 200
   data = response.json()
   assert data["id"] == post_id
+
+def test_update_post_put(base_url):
+  update_data = {
+     "id" : 1,
+     "title" : "updated title using PUT",
+     "body"  : "updated body using PUT",
+     "userId" : 1
+  }
+  response = requests.put(f"{base_url}/posts/1", json=update_data)
+  assert response.status_code == 200
+  data = response.json()
+  assert data["title"] == "updated title using PUT"
+
+def test_update_post_patch(base_url):
+  update_data = {
+    "body" : "updated body using PATCH"
+  }
+  response = requests.patch(f"{base_url}/posts/1", json=update_data)
+  assert response.status_code == 200
+  data = response.json()
+  assert data["body"] == "updated body using PATCH"
+
+
+
   
