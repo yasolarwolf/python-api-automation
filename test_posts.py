@@ -1,14 +1,20 @@
 import pytest
-import requests
+from schemas import PostSchema
 
 def test_get_status_code(api_client):
   response = api_client.get_posts()
   assert response.status_code == 200
 
+  posts = [PostSchema(**item) for item in response.json()]
+  assert len(posts) > 0
+
+
 def test_get_single_post(api_client):
   response = api_client.get_post_by_id(1)
   assert response.status_code == 200
-  assert response.json()["id"] == 1
+
+  post = PostSchema(**response.json())
+  assert post.id == 1
 
 def test_request_non_existent_post(api_client):
   response = api_client.get_post_by_id(1999)
@@ -18,7 +24,9 @@ def test_request_non_existent_post(api_client):
 def test_get_multiple_posts(api_client, post_id):
   response = api_client.get_post_by_id(post_id)
   assert response.status_code == 200
-  assert response.json()["id"] == post_id
+
+  post = PostSchema(**response.json())
+  assert post.id == post_id
 
 def test_create_post(api_client):
   create_post_data = {
@@ -29,9 +37,9 @@ def test_create_post(api_client):
 
   response = api_client.create_post(create_post_data)
   assert response.status_code == 201
-  data = response.json()
-  assert data["title"] == "new title 1"
-  assert "id" in data
+
+  created_post = PostSchema(**response.json())
+  assert created_post.title == "new title 1"
 
 def test_update_post_put(api_client):
   update_data = {
@@ -42,7 +50,9 @@ def test_update_post_put(api_client):
   }
   response = api_client.update_post_put(1, update_data)
   assert response.status_code == 200
-  assert response.json()["title"] == "updated title using PUT"
+
+  updated_post = PostSchema(**response.json())
+  assert updated_post.title == "updated title using PUT"
 
 def test_update_post_patch(api_client):
   update_data = {
@@ -50,7 +60,8 @@ def test_update_post_patch(api_client):
   }
   response = api_client.update_post_patch(1, update_data)
   assert response.status_code == 200
-  assert response.json()["body"] == "updated body using PATCH"
+  updated_post = PostSchema(**response.json())
+  assert updated_post.body == "updated body using PATCH"
 
 def test_delete_post(api_client):
   response = api_client.delete_post(1)
