@@ -50,11 +50,14 @@ jobs:
         if: always()
         with:
           allure_results: allure-results
-          allure_history: allure-history
+          allure_history: allure-report
 
-      - name: Deploy Allure Report to GitHub Pages
+      - name: Upload Allure Report Artifact
+        uses: actions/upload-pages-artifact@v3
         if: always()
-        uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: allure-history
+          path: allure-report
+
+      - name: Deploy to GitHub Pages
+        uses: aсtions/deploy-pages@v4
+        if: always()
