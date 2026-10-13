@@ -1,0 +1,8 @@
+services:
+ api-tests:
+  build: .
+  container_name: jsonplaceholder_api_tests
+  volumes:
+   - ./allure-results:/app/allure-results
+  env_file:
+   - .env
